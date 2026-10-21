@@ -42,6 +42,9 @@ $router->post('/deconnexion', [$authController, 'logout']);
 $tripController = new TripController($auth, $session, $trips, new AgencyRepository($pdo), new TripValidator());
 $router->get('/trajets/nouveau', [$tripController, 'create']);
 $router->post('/trajets', [$tripController, 'store']);
+$router->get('/trajets/modifier', [$tripController, 'edit']);
+$router->post('/trajets/modifier', [$tripController, 'update']);
+$router->post('/trajets/supprimer', [$tripController, 'destroy']);
 
 $router->dispatch(
     $_SERVER['REQUEST_METHOD'] ?? 'GET',

@@ -41,4 +41,31 @@ final class TripRepositoryTest extends TestCase
 
         self::assertSame($rows, $trips);
     }
+    /** La création utilise des paramètres liés et retourne l'identifiant inséré. */
+    public function testCreateInsertsTripWithBoundParameters(): void
+    {
+        $statement = $this->createMock(PDOStatement::class);
+        $statement->expects(self::once())
+            ->method('execute')
+            ->with([
+                'date_depart' => '2030-06-01 08:00:00',
+                'date_arrivee' => '2030-06-01 10:00:00',
+                'places_total' => 4,
+                'places_disponibles' => 3,
+                'id_auteur' => 5,
+                'id_agence_depart' => 1,
+                'id_agence_arrivee' => 2,
+            ]);
+
+        $pdo = $this->createMock(PDO::class);
+        $pdo->expects(self::once())
+            ->method('prepare')
+            ->with(self::stringContains('INSERT INTO trajet'))
+            ->willReturn($statement);
+        $pdo->method('lastInsertId')->willReturn('15');
+
+        $id = (new TripRepository($pdo))->create(5, 1, 2, '2030-06-01 08:00:00', '2030-06-01 10:00:00', 4, 3);
+
+        self::assertSame(15, $id);
+    }
 }

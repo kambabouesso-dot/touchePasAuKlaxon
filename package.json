@@ -2,7 +2,9 @@
     "name": "touche-pas-au-klaxon",
     "private": true,
     "scripts": {
-        "build": "sass --load-path=node_modules --quiet-deps resources/scss/app.scss public/assets/app.css --style=compressed --no-source-map"
+        "build:css": "sass --load-path=node_modules --quiet-deps resources/scss/app.scss public/assets/app.css --style=compressed --no-source-map",
+        "build:js": "node -e \"require('fs').copyFileSync('node_modules/bootstrap/dist/js/bootstrap.bundle.min.js','public/assets/bootstrap.bundle.min.js')\"",
+        "build": "npm run build:css && npm run build:js"
     },
     "dependencies": {
         "bootstrap": "^5.3.3"

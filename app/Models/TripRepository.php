@@ -183,4 +183,35 @@ final class TripRepository
 
         return $statement->rowCount() > 0;
     }
+
+    /**
+     * Tous les trajets (passés compris) pour l'administration.
+     *
+     * @return list<array{id_trajet: int|string, date_depart: string, date_arrivee: string, places_total: int|string, places_disponibles: int|string, agence_depart: string, agence_arrivee: string, auteur_nom: string, auteur_prenom: string}>
+     */
+    public function findAllForAdmin(): array
+    {
+        $statement = $this->pdo->query(
+            'SELECT trajet.id_trajet, trajet.date_depart, trajet.date_arrivee,
+                    trajet.places_total, trajet.places_disponibles,
+                    agence_depart.nom AS agence_depart, agence_arrivee.nom AS agence_arrivee,
+                    utilisateur.nom AS auteur_nom, utilisateur.prenom AS auteur_prenom
+             FROM trajet
+             INNER JOIN agence AS agence_depart ON agence_depart.id_agence = trajet.id_agence_depart
+             INNER JOIN agence AS agence_arrivee ON agence_arrivee.id_agence = trajet.id_agence_arrivee
+             INNER JOIN utilisateur ON utilisateur.id_utilisateur = trajet.id_auteur
+             ORDER BY trajet.date_depart DESC'
+        );
+
+        return $statement->fetchAll();
+    }
+
+    /** Supprime un trajet sans condition d'auteur (réservé à l'administrateur). */
+    public function deleteAsAdmin(int $tripId): bool
+    {
+        $statement = $this->pdo->prepare('DELETE FROM trajet WHERE id_trajet = :id_trajet');
+        $statement->execute(['id_trajet' => $tripId]);
+
+        return $statement->rowCount() > 0;
+    }
 }

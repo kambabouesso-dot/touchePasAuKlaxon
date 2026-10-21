@@ -28,6 +28,7 @@ $currentUser = $currentUser ?? null;
                         <a class="btn btn-light" href="/connexion">Connexion</a>
                     <?php else: ?>
                         <?php if ($currentUser['role'] !== 'admin'): ?>
+                            <a class="btn btn-light" href="/trajets/nouveau">Créer un trajet</a>
                             <span class="navbar-text text-white">
                                 <?= htmlspecialchars($currentUser['prenom'] . ' ' . $currentUser['nom'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>
                             </span>
@@ -51,5 +52,6 @@ $currentUser = $currentUser ?? null;
                 Touche pas au klaxon &copy; <?= date('Y') ?>
             </div>
         </footer>
+        <script src="/assets/bootstrap.bundle.min.js"></script>
     </body>
 </html>

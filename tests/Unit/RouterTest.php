@@ -24,6 +24,25 @@ final class RouterTest extends TestCase
         self::assertTrue($wasCalled);
     }
 
+    /** Une route POST n'est pas atteignable en GET. */
+    public function testPostRouteIsNotReachableWithGet(): void
+    {
+        $router = new Router();
+        $wasCalled = false;
+        $router->post('/connexion', static function () use (&$wasCalled): void {
+            $wasCalled = true;
+        });
+
+        ob_start();
+        $router->dispatch('GET', '/connexion');
+        ob_end_clean();
+
+        self::assertFalse($wasCalled);
+
+        $router->dispatch('POST', '/connexion');
+        self::assertTrue($wasCalled);
+    }
+
     /** Une route inconnue renvoie le statut HTTP 404. */
     public function testReturnsNotFoundForUnknownRoute(): void
     {

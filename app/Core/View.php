@@ -7,14 +7,25 @@ namespace App\Core;
 use RuntimeException;
 use Throwable;
 
-/** Rend une vue dans le gabarit commun de l'application. */
+/** Vue dans le gabarit commun de l'application. */
 final class View
 {
+    /** @var array<string, mixed> */
+    private static array $shared = [];
+
+    /** Mise à disposition d'une variable dans toutes les vues (ex. utilisateur connecté). */
+    public static function share(string $name, mixed $value): void
+    {
+        self::$shared[$name] = $value;
+    }
+
     /**
      * @param array<string, mixed> $data
      */
     public static function render(string $template, array $data = []): void
     {
+        $data = array_merge(self::$shared, $data);
+
         if (preg_match('/\A[a-zA-Z0-9_\/-]+\z/', $template) !== 1) {
             throw new RuntimeException('Nom de vue invalide.');
         }

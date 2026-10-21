@@ -1,0 +1,31 @@
+AGENCE(
+  id_agence [PK],
+  nom [UNIQUE]
+)
+
+UTILISATEUR(
+  id_utilisateur [PK],
+  nom,
+  prenom,
+  email [UNIQUE],
+  telephone,
+  mot_de_passe_hash,
+  role
+)
+
+TRAJET(
+  id_trajet [PK],
+  date_depart,
+  date_arrivee,
+  places_total,
+  places_disponibles,
+  id_auteur [FK -> UTILISATEUR.id_utilisateur],
+  id_agence_depart [FK -> AGENCE.id_agence],
+  id_agence_arrivee [FK -> AGENCE.id_agence]
+)
+
+
+Légende : 
+* PK signifie « clé primaire », 
+* FK signifie « clé étrangère », 
+* UNIQUE indique une valeur qui ne peut pas être répétée.

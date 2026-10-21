@@ -3,6 +3,7 @@
 /**
  * @var list<array{
  *     id_trajet?: int|string,
+ *     id_auteur?: int|string,
  *     date_depart: string,
  *     date_arrivee: string,
  *     places_disponibles: int|string,
@@ -14,6 +15,8 @@
  *     auteur_email?: string,
  *     auteur_telephone?: string
  * }> $trips
+ * @var array{id_utilisateur: int}|null $currentUser
+ * @var string $csrfToken
  */
 $e = static fn (string $value): string => htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 $formatDate = static fn (string $value): string => (new DateTimeImmutable($value))->format('d/m/Y à H:i');
@@ -56,6 +59,7 @@ $formatDate = static fn (string $value): string => (new DateTimeImmutable($value
 
                             <?php if (isset(
                                 $trip['id_trajet'],
+                                $trip['id_auteur'],
                                 $trip['places_total'],
                                 $trip['auteur_nom'],
                                 $trip['auteur_prenom'],
@@ -67,6 +71,16 @@ $formatDate = static fn (string $value): string => (new DateTimeImmutable($value
                                         data-bs-toggle="modal" data-bs-target="#<?= $modalId ?>">
                                     Détails
                                 </button>
+                                <?php if ($currentUser !== null && (int) $trip['id_auteur'] === $currentUser['id_utilisateur']): ?>
+                                    <a class="btn btn-outline-secondary btn-sm mt-3"
+                                       href="/trajets/modifier?id=<?= (int) $trip['id_trajet'] ?>">Modifier</a>
+                                    <form method="post" action="/trajets/supprimer" class="d-inline"
+                                          onsubmit="return confirm('Supprimer définitivement ce trajet ?');">
+                                        <input type="hidden" name="csrf_token" value="<?= $e($csrfToken) ?>">
+                                        <input type="hidden" name="id" value="<?= (int) $trip['id_trajet'] ?>">
+                                        <button class="btn btn-outline-danger btn-sm mt-3" type="submit">Supprimer</button>
+                                    </form>
+                                <?php endif; ?>
 
                                 <div class="modal fade" id="<?= $modalId ?>" tabindex="-1"
                                      aria-labelledby="<?= $modalId ?>-title" aria-hidden="true">

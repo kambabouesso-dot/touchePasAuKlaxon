@@ -68,4 +68,61 @@ final class TripRepositoryTest extends TestCase
 
         self::assertSame(15, $id);
     }
+    /** La modification est limitée à l'auteur et utilise des paramètres liés. */
+    public function testUpdateIsRestrictedToAuthorWithBoundParameters(): void
+    {
+        $statement = $this->createMock(PDOStatement::class);
+        $statement->expects(self::once())
+            ->method('execute')
+            ->with([
+                'date_depart' => '2030-06-01 08:00:00',
+                'date_arrivee' => '2030-06-01 10:00:00',
+                'places_total' => 4,
+                'places_disponibles' => 2,
+                'id_agence_depart' => 1,
+                'id_agence_arrivee' => 2,
+                'id_trajet' => 15,
+                'id_auteur' => 5,
+            ]);
+
+        $pdo = $this->createMock(PDO::class);
+        $pdo->expects(self::once())
+            ->method('prepare')
+            ->with(self::logicalAnd(
+                self::stringContains('UPDATE trajet'),
+                self::stringContains('AND id_auteur = :id_auteur')
+            ))
+            ->willReturn($statement);
+
+        (new TripRepository($pdo))->update(15, 5, 1, 2, '2030-06-01 08:00:00', '2030-06-01 10:00:00', 4, 2);
+    }
+
+    /** La suppression retourne true quand une ligne de l'auteur est supprimée. */
+    public function testDeleteReturnsTrueWhenARowIsDeleted(): void
+    {
+        self::assertTrue($this->runDelete(1));
+    }
+
+    /** La suppression retourne false si le trajet n'appartient pas à l'auteur. */
+    public function testDeleteReturnsFalseWhenNothingIsDeleted(): void
+    {
+        self::assertFalse($this->runDelete(0));
+    }
+
+    private function runDelete(int $affectedRows): bool
+    {
+        $statement = $this->createMock(PDOStatement::class);
+        $statement->expects(self::once())
+            ->method('execute')
+            ->with(['id_trajet' => 15, 'id_auteur' => 5]);
+        $statement->method('rowCount')->willReturn($affectedRows);
+
+        $pdo = $this->createMock(PDO::class);
+        $pdo->expects(self::once())
+            ->method('prepare')
+            ->with(self::stringContains('AND id_auteur = :id_auteur'))
+            ->willReturn($statement);
+
+        return (new TripRepository($pdo))->delete(15, 5);
+    }
 }

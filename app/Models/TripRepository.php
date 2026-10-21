@@ -47,6 +47,7 @@ final class TripRepository
     /**
      * @return list<array{
      *     id_trajet: int|string,
+     *     id_auteur: int|string,
      *     date_depart: string,
      *     date_arrivee: string,
      *     places_disponibles: int|string,
@@ -64,6 +65,7 @@ final class TripRepository
         $statement = $this->pdo->query(
             'SELECT
                 trajet.id_trajet,
+                trajet.id_auteur,
                 trajet.date_depart,
                 trajet.date_arrivee,
                 trajet.places_disponibles,
@@ -118,5 +120,67 @@ final class TripRepository
         ]);
 
         return (int) $this->pdo->lastInsertId();
+    }
+    /**
+     * @return array<string, int|string>|null
+     */
+    public function findById(int $id): ?array
+    {
+        $statement = $this->pdo->prepare(
+            'SELECT id_trajet, id_auteur, id_agence_depart, id_agence_arrivee,
+                    date_depart, date_arrivee, places_total, places_disponibles
+             FROM trajet
+             WHERE id_trajet = :id
+             LIMIT 1'
+        );
+        $statement->execute(['id' => $id]);
+        $row = $statement->fetch();
+
+        return $row === false ? null : $row;
+    }
+
+    /** Met à jour un trajet, uniquement s'il appartient à l'auteur indiqué. */
+    public function update(
+        int $tripId,
+        int $authorId,
+        int $departureAgencyId,
+        int $arrivalAgencyId,
+        string $departure,
+        string $arrival,
+        int $seatsTotal,
+        int $seatsAvailable
+    ): void {
+        $statement = $this->pdo->prepare(
+            'UPDATE trajet
+             SET date_depart = :date_depart,
+                 date_arrivee = :date_arrivee,
+                 places_total = :places_total,
+                 places_disponibles = :places_disponibles,
+                 id_agence_depart = :id_agence_depart,
+                 id_agence_arrivee = :id_agence_arrivee
+             WHERE id_trajet = :id_trajet
+               AND id_auteur = :id_auteur'
+        );
+        $statement->execute([
+            'date_depart' => $departure,
+            'date_arrivee' => $arrival,
+            'places_total' => $seatsTotal,
+            'places_disponibles' => $seatsAvailable,
+            'id_agence_depart' => $departureAgencyId,
+            'id_agence_arrivee' => $arrivalAgencyId,
+            'id_trajet' => $tripId,
+            'id_auteur' => $authorId,
+        ]);
+    }
+
+    /** Supprime un trajet, uniquement s'il appartient à l'auteur ; retourne true si une ligne a été supprimée. */
+    public function delete(int $tripId, int $authorId): bool
+    {
+        $statement = $this->pdo->prepare(
+            'DELETE FROM trajet WHERE id_trajet = :id_trajet AND id_auteur = :id_auteur'
+        );
+        $statement->execute(['id_trajet' => $tripId, 'id_auteur' => $authorId]);
+
+        return $statement->rowCount() > 0;
     }
 }

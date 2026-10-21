@@ -6,20 +6,27 @@
  * @var list<array{id_agence: int|string, nom: string}> $agencies
  * @var array<string, string> $old
  * @var array<string, string> $errors
+ * @var string $heading
+ * @var string $formAction
+ * @var string $submitLabel
+ * @var int|null $tripId
  */
 $e = static fn (string $value): string => htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 $invalid = static fn (string $field): string => isset($errors[$field]) ? ' is-invalid' : '';
 ?>
 <section class="row justify-content-center" aria-labelledby="page-heading">
     <div class="col-12 col-lg-8">
-        <h1 class="h2 mb-4" id="page-heading">Proposer un trajet</h1>
+        <h1 class="h2 mb-4" id="page-heading"><?= $e($heading) ?></h1>
 
         <?php if (isset($errors['form'])): ?>
             <div class="alert alert-danger" role="alert"><?= $e($errors['form']) ?></div>
         <?php endif; ?>
 
-        <form method="post" action="/trajets" novalidate>
+        <form method="post" action="<?= $e($formAction) ?>" novalidate>
             <input type="hidden" name="csrf_token" value="<?= $e($csrfToken) ?>">
+            <?php if ($tripId !== null): ?>
+                <input type="hidden" name="id" value="<?= $tripId ?>">
+            <?php endif; ?>
 
             <fieldset class="mb-4">
                 <legend class="h5">Contact</legend>
@@ -88,7 +95,7 @@ $invalid = static fn (string $field): string => isset($errors[$field]) ? ' is-in
                 </div>
             </fieldset>
 
-            <button class="btn btn-primary" type="submit">Publier le trajet</button>
+            <button class="btn btn-primary" type="submit"><?= $e($submitLabel) ?></button>
             <a class="btn btn-link" href="/">Annuler</a>
         </form>
     </div>

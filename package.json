@@ -1,0 +1,13 @@
+{
+    "name": "touche-pas-au-klaxon",
+    "private": true,
+    "scripts": {
+        "build": "sass --load-path=node_modules --quiet-deps resources/scss/app.scss public/assets/app.css --style=compressed --no-source-map"
+    },
+    "dependencies": {
+        "bootstrap": "^5.3.3"
+    },
+    "devDependencies": {
+        "sass": "^1.77.0"
+    }
+}

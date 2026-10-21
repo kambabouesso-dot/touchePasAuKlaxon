@@ -1,0 +1,8 @@
+@use "bootstrap/scss/bootstrap" with (
+    $primary: #002060,
+    $secondary: #6b9f25
+);
+
+.trip-card {
+    border-top: 3px solid bootstrap.$secondary;
+}

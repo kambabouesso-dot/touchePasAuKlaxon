@@ -33,6 +33,22 @@ class UserRepository
     }
 
     /**
+     * Liste des utilisateurs, sans mot de passe.
+     *
+     * @return list<array{id_utilisateur: int|string, nom: string, prenom: string, email: string, telephone: string, role: string}>
+     */
+    public function findAll(): array
+    {
+        $statement = $this->pdo->query(
+            'SELECT id_utilisateur, nom, prenom, email, telephone, role
+             FROM utilisateur
+             ORDER BY nom ASC, prenom ASC'
+        );
+
+        return $statement->fetchAll();
+    }
+
+    /**
      * Retourne un utilisateur sans son hash de mot de passe.
      *
      * @return array{id_utilisateur: int, nom: string, prenom: string, email: string, telephone: string, role: string}|null

@@ -32,6 +32,10 @@ $currentUser = $currentUser ?? null;
                             <span class="navbar-text text-white">
                                 <?= htmlspecialchars($currentUser['prenom'] . ' ' . $currentUser['nom'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>
                             </span>
+                        <?php else: ?>
+                            <a class="btn btn-light" href="/admin/utilisateurs">Utilisateurs</a>
+                            <a class="btn btn-light" href="/admin/agences">Agences</a>
+                            <a class="btn btn-light" href="/admin/trajets">Trajets</a>
                         <?php endif; ?>
                         <form method="post" action="/deconnexion" class="m-0">
                             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>">

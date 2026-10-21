@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Controllers\AdminController;
 use App\Controllers\AuthController;
 use App\Controllers\HomeController;
 use App\Controllers\TripController;
@@ -45,6 +46,16 @@ $router->post('/trajets', [$tripController, 'store']);
 $router->get('/trajets/modifier', [$tripController, 'edit']);
 $router->post('/trajets/modifier', [$tripController, 'update']);
 $router->post('/trajets/supprimer', [$tripController, 'destroy']);
+
+$adminController = new AdminController($auth, $session, new UserRepository($pdo), new AgencyRepository($pdo), $trips);
+$router->get('/admin/utilisateurs', [$adminController, 'users']);
+$router->get('/admin/agences', [$adminController, 'agencies']);
+$router->post('/admin/agences', [$adminController, 'createAgency']);
+$router->get('/admin/agences/modifier', [$adminController, 'editAgency']);
+$router->post('/admin/agences/modifier', [$adminController, 'updateAgency']);
+$router->post('/admin/agences/supprimer', [$adminController, 'deleteAgency']);
+$router->get('/admin/trajets', [$adminController, 'trips']);
+$router->post('/admin/trajets/supprimer', [$adminController, 'deleteTrip']);
 
 $router->dispatch(
     $_SERVER['REQUEST_METHOD'] ?? 'GET',

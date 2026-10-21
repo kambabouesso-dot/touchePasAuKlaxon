@@ -7,15 +7,15 @@ namespace App\Controllers;
 use App\Core\View;
 use App\Models\TripRepository;
 
-/** Prépare et affiche la page publique d'accueil. */
+/** Affichage de la page publique d'accueil. */
 final class HomeController
 {
-    /** Crée le contrôleur avec son dépôt de trajets. */
+    /** Création du contrôleur avec son dépôt de trajets. */
     public function __construct(private readonly TripRepository $trips)
     {
     }
 
-    /** Affiche les trajets futurs disposant encore de places. */
+    /** Affichage des trajets futurs disposant encore de places. */
     public function index(): void
     {
         View::render('home/index', [

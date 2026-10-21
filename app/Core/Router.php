@@ -4,19 +4,25 @@ declare(strict_types=1);
 
 namespace App\Core;
 
-/** Enregistre et distribue les routes HTTP de l'application. */
+/** Enregistrement et distribution des routes HTTP de l'application. */
 final class Router
 {
     /** @var array<string, array<string, callable(): void>> */
     private array $routes = [];
 
-    /** Enregistre une route GET. */
+    /** Enregistrement d'une route GET. */
     public function get(string $path, callable $handler): void
     {
         $this->routes['GET'][$path] = $handler;
     }
 
-    /** Exécute la route correspondant à la méthode et au chemin demandés. */
+    /** Enregistrement d'une route POST. */
+    public function post(string $path, callable $handler): void
+    {
+        $this->routes['POST'][$path] = $handler;
+    }
+
+    /** Exécution de la route correspondant à la méthode et au chemin demandés. */
     public function dispatch(string $method, string $uri): void
     {
         $path = parse_url($uri, PHP_URL_PATH);

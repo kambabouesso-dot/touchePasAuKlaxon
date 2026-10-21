@@ -48,6 +48,7 @@ $router->post('/trajets/modifier', [$tripController, 'update']);
 $router->post('/trajets/supprimer', [$tripController, 'destroy']);
 
 $adminController = new AdminController($auth, $session, new UserRepository($pdo), new AgencyRepository($pdo), $trips);
+$router->get('/admin', [$adminController, 'dashboard']);
 $router->get('/admin/utilisateurs', [$adminController, 'users']);
 $router->get('/admin/agences', [$adminController, 'agencies']);
 $router->post('/admin/agences', [$adminController, 'createAgency']);

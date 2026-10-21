@@ -25,6 +25,16 @@ final class AdminController
     ) {
     }
 
+    /** Tableau de bord : accès aux fonctionnalités d'administration. */
+    public function dashboard(): void
+    {
+        if (!$this->guard()) {
+            return;
+        }
+
+        View::render('admin/dashboard', ['pageTitle' => 'Tableau de bord']);
+    }
+
     /** Liste des utilisateurs. */
     public function users(): void
     {

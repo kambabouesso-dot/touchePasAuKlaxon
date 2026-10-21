@@ -54,7 +54,8 @@ final class AuthController
             return;
         }
 
-        $this->redirect('/');
+        $user = $this->auth->currentUser();
+        $this->redirect($user !== null && $user['role'] === 'admin' ? '/admin' : '/');
     }
 
     /** Déconnexion de l'utilisateur (requête POST protégée par jeton CSRF). */

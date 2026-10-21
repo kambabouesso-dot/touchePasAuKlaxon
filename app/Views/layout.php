@@ -21,7 +21,7 @@ $currentUser = $currentUser ?? null;
     <body class="d-flex min-vh-100 flex-column">
         <header class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
             <div class="container">
-                <a class="navbar-brand fw-semibold" href="/">Touche pas au klaxon</a>
+                <a class="navbar-brand fw-semibold" href="<?= $currentUser !== null && $currentUser['role'] === 'admin' ? '/admin' : '/' ?>">Touche pas au klaxon</a>
 
                 <div class="d-flex align-items-center gap-3">
                     <?php if ($currentUser === null): ?>

@@ -1,8 +1,15 @@
+// Palette imposée par le brief, appliquée via les variables Bootstrap
+// pour que les futurs sites thématiques n'aient qu'à changer ces valeurs.
 @use "bootstrap/scss/bootstrap" with (
-    $primary: #002060,
-    $secondary: #6b9f25
+    $primary: #0074c7,
+    $secondary: #384050,
+    $success: #82b864,
+    $info: #00497c,
+    $danger: #cd2c2e,
+    $light: #f1f8fc,
+    $dark: #384050
 );
 
 .trip-card {
-    border-top: 3px solid bootstrap.$secondary;
+    border-top: 3px solid bootstrap.$success;
 }
